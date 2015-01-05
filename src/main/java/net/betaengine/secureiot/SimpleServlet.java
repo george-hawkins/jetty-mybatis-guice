@@ -62,6 +62,12 @@ public class SimpleServlet extends HttpServlet {
     String password = dbUri.getUserInfo().split(":")[1];
     String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + dbUri.getPath();
 
+    // If accessing a Heroku DB remotely the URI should end in
+    // "?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory".
+    if (dbUri.getQuery() != null) {
+        dbUrl += "?" + dbUri.getQuery();
+    }
+
     return DriverManager.getConnection(dbUrl, username, password);
   }
 }
