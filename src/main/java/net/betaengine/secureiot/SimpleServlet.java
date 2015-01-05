@@ -9,7 +9,13 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 public class SimpleServlet extends HttpServlet {
+    private final static Logger log = LoggerFactory.getLogger(SimpleServlet.class);
+
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
@@ -48,6 +54,8 @@ public class SimpleServlet extends HttpServlet {
   }
 
   private Connection getConnection() throws URISyntaxException, SQLException {
+      log.info("DATABASE_URL {}", System.getenv("DATABASE_URL"));
+
     URI dbUri = new URI(System.getenv("DATABASE_URL"));
 
     String username = dbUri.getUserInfo().split(":")[0];
