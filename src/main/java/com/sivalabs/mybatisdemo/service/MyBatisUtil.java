@@ -2,6 +2,7 @@ package com.sivalabs.mybatisdemo.service;
 
 import java.io.IOException;
 import java.io.Reader;
+
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
@@ -20,6 +21,11 @@ public class MyBatisUtil {
             throw new RuntimeException(e.getMessage());
         }
         factory = new SqlSessionFactoryBuilder().build(reader);
+//        
+//        Configuration configuration = factory.getConfiguration();
+//        
+//        configuration.getTypeAliasRegistry().registerAliases("my.package");
+//        configuration.addMappers("my.package");
     }
 
     public static SqlSessionFactory getSqlSessionFactory() {

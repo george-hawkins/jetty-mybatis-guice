@@ -33,7 +33,7 @@ public class UserService {
     private <M> void writeTransactional(Class<M> clazz, Consumer<M> consumer) {
         this.<Void>doTransaction(sqlSession -> {
             consumer.accept(sqlSession.getMapper(clazz));
-            sqlSession.commit();
+            sqlSession.commit(); // And where's rollback?
             return null;
         });
     }
