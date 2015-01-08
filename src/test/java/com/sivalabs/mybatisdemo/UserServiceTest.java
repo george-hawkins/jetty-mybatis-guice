@@ -8,26 +8,26 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.sivalabs.mybatisdemo.domain.User;
-import com.sivalabs.mybatisdemo.service.UserService;
+import com.sivalabs.mybatisdemo.dao.UserDao;
+import com.sivalabs.mybatisdemo.model.User;
 
 public class UserServiceTest {
-    private static UserService userService;
+    private static UserDao userDao;
 
     @BeforeClass
     public static void setup() {
-        userService = new UserService();
+        userDao = new UserDao();
     }
 
     @AfterClass
     public static void teardown() {
-        userService = null;
+        userDao = null;
     }
 
     @Test
     public void testGetUserById() {
         User user = insertUser();
-        User retrievedUser = userService.getUserById(user.getUserId());
+        User retrievedUser = userDao.getUserById(user.getUserId());
         
         Assert.assertNotNull(retrievedUser);
         System.out.println(retrievedUser);
@@ -37,7 +37,7 @@ public class UserServiceTest {
     public void testGetAllUsers() {
         insertUser(); // Ensure at least one user present.
 
-        List<User> users = userService.getAllUsers();
+        List<User> users = userDao.getAllUsers();
         Assert.assertNotNull(users);
         for (User user : users)
         {
@@ -53,7 +53,7 @@ public class UserServiceTest {
         user.setFirstName("TestFirstName");
         user.setLastName("TestLastName");
 
-        userService.insertUser(user);
+        userDao.insertUser(user);
 
         Assert.assertTrue(user.getUserId() != 0);
 
@@ -64,7 +64,7 @@ public class UserServiceTest {
     public void testInsertUser() {
         User user = insertUser();
 
-        User createdUser = userService.getUserById(user.getUserId());
+        User createdUser = userDao.getUserById(user.getUserId());
         Assert.assertNotNull(createdUser);
         Assert.assertEquals(user.getEmailId(), createdUser.getEmailId());
         Assert.assertEquals(user.getPassword(), createdUser.getPassword());
@@ -78,11 +78,11 @@ public class UserServiceTest {
         int userId = insertUser().getUserId();
         
         long timestamp = System.currentTimeMillis();
-        User user = userService.getUserById(userId);
+        User user = userDao.getUserById(userId);
         user.setFirstName("TestFirstName" + timestamp);
         user.setLastName("TestLastName" + timestamp);
-        userService.updateUser(user);
-        User updatedUser = userService.getUserById(userId);
+        userDao.updateUser(user);
+        User updatedUser = userDao.getUserById(userId);
         Assert.assertEquals(user.getFirstName(), updatedUser.getFirstName());
         Assert.assertEquals(user.getLastName(), updatedUser.getLastName());
     }
@@ -91,9 +91,9 @@ public class UserServiceTest {
     public void testDeleteUser() {
         int userId = insertUser().getUserId();
         
-        User user = userService.getUserById(userId);
-        userService.deleteUser(user.getUserId());
-        User deletedUser = userService.getUserById(userId);
+        User user = userDao.getUserById(userId);
+        userDao.deleteUser(user.getUserId());
+        User deletedUser = userDao.getUserById(userId);
         Assert.assertNull(deletedUser);
     }
 }

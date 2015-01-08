@@ -1,7 +1,8 @@
-package com.sivalabs.mybatisdemo.mappers;
+package com.sivalabs.mybatisdemo.mapper;
 
 import java.util.List;
-import com.sivalabs.mybatisdemo.domain.User;
+
+import com.sivalabs.mybatisdemo.model.User;
 
 public interface UserMapper {
 

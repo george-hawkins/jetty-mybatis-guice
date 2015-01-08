@@ -1,4 +1,4 @@
-package com.sivalabs.mybatisdemo.service;
+package com.sivalabs.mybatisdemo.dao;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -6,10 +6,10 @@ import java.util.function.Function;
 
 import org.apache.ibatis.session.SqlSession;
 
-import com.sivalabs.mybatisdemo.domain.User;
-import com.sivalabs.mybatisdemo.mappers.UserMapper;
+import com.sivalabs.mybatisdemo.mapper.UserMapper;
+import com.sivalabs.mybatisdemo.model.User;
 
-public class UserService {
+public class UserDao {
     public void insertUser(User user) {
         writeTransactional(UserMapper.class, mapper -> mapper.insertUser(user));
     }
@@ -43,7 +43,7 @@ public class UserService {
     }
 
     private <R> R doTransaction(Function<SqlSession, R> action) {
-        SqlSession sqlSession = MyBatisUtil.getSqlSessionFactory().openSession();
+        SqlSession sqlSession = MyBatisSqlSessionFactory.getFactory().openSession();
         
         try {
             return action.apply(sqlSession);

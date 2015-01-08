@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.sivalabs.mybatisdemo.mappers.UserMapper">
+<mapper namespace="com.sivalabs.mybatisdemo.mapper.UserMapper">
 
-    <!-- parameterType is optional -->
-    <!--
-    <select id="getUserById" parameterType="int" resultType="com.sivalabs.mybatisdemo.domain.User">
-    -->
-    <select id="getUserById" resultType="com.sivalabs.mybatisdemo.domain.User">
+    <select id="getUserById" resultType="User">
         SELECT 
             user_id as userId, 
             email_id as emailId , 
@@ -30,17 +26,11 @@
         SELECT * FROM USERS
     </select>
 
-    <!--
-    <insert id="insertUser" parameterType="User" useGeneratedKeys="true" keyProperty="userId">
-    -->
     <insert id="insertUser" useGeneratedKeys="true" keyProperty="userId">
         INSERT INTO USERS(email_id, password, first_name, last_name)
         VALUES(#{emailId}, #{password}, #{firstName}, #{lastName})
     </insert>
 
-    <!--
-    <update id="updateUser" parameterType="User">
-    -->
     <update id="updateUser">
         UPDATE USERS 
         SET
@@ -50,9 +40,6 @@
         WHERE USER_ID = #{userId}
     </update>
 
-    <!--
-    <delete id="deleteUser" parameterType="int">
-    -->
     <delete id="deleteUser">
         DELETE FROM USERS WHERE USER_ID = #{userId}
     </delete>
