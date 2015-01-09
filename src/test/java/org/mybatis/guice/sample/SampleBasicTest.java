@@ -15,31 +15,14 @@
  */
 package org.mybatis.guice.sample;
 
-import static com.google.inject.Guice.createInjector;
-import static com.google.inject.name.Names.bindProperties;
-import static org.apache.ibatis.io.Resources.getResourceAsReader;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.util.Properties;
-
-import javax.sql.DataSource;
-
-import org.apache.ibatis.jdbc.ScriptRunner;
-import org.apache.ibatis.mapping.Environment;
-import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
-import org.junit.Before;
-import org.junit.Test;
-import org.mybatis.guice.CustomException;
 import org.mybatis.guice.MyBatisModule;
 import org.mybatis.guice.datasource.builtin.PooledDataSourceProvider;
 import org.mybatis.guice.datasource.helper.JdbcHelper;
-import org.mybatis.guice.sample.domain.User;
 import org.mybatis.guice.sample.mapper.UserMapper;
-import org.mybatis.guice.sample.service.FooService;
 
-import com.google.inject.Injector;
+import com.google.inject.Module;
+import com.google.inject.name.Names;
 
 /**
  * Example of MyBatis-Guice basic integration usage.
@@ -48,72 +31,22 @@ import com.google.inject.Injector;
  *
  * @version $Id$
  */
-public class SampleBasicTest {
+public class SampleBasicTest extends SampleTestBase {
+    @Override
+    protected Module[] createModules() {
+        return new Module[] {
+            new MyBatisModule() {
+                @Override
+                protected void initialize() {
+                    install(JdbcHelper.HSQLDB_IN_MEMORY_NAMED);
 
-    private Injector injector;
+                    bindDataSourceProviderType(PooledDataSourceProvider.class);
+                    bindTransactionFactoryType(JdbcTransactionFactory.class);
+                    addMapperClass(UserMapper.class);
 
-    private FooService fooService;
-
-    @Before
-    public void setupMyBatisGuice() throws Exception {
-
-        // bindings
-        this.injector = createInjector(new MyBatisModule() {
-
-                    @Override
-                    protected void initialize() {
-                        install(JdbcHelper.HSQLDB_IN_MEMORY_NAMED);
-
-                        bindDataSourceProviderType(PooledDataSourceProvider.class);
-                        bindTransactionFactoryType(JdbcTransactionFactory.class);
-                        addMapperClass(UserMapper.class);
-
-                        bindProperties(binder(), createTestProperties());
-                    }
-
+                    Names.bindProperties(binder(), createTestProperties());
                 }
-        );
-
-        // prepare the test db
-        Environment environment = this.injector.getInstance(SqlSessionFactory.class).getConfiguration().getEnvironment();
-        DataSource dataSource = environment.getDataSource();
-        ScriptRunner runner = new ScriptRunner(dataSource.getConnection());
-        runner.setAutoCommit(true);
-        runner.setStopOnError(true);
-        runner.runScript(getResourceAsReader("org/mybatis/guice/sample/db/database-schema.sql"));
-        runner.runScript(getResourceAsReader("org/mybatis/guice/sample/db/database-test-data.sql"));
-        runner.closeConnection();
-
-        this.fooService = this.injector.getInstance(FooService.class);
-    }
-
-    protected static Properties createTestProperties() {
-        Properties myBatisProperties = new Properties();
-        myBatisProperties.setProperty("mybatis.environment.id", "test");
-        myBatisProperties.setProperty("JDBC.username", "sa");
-        myBatisProperties.setProperty("JDBC.password", "");
-        myBatisProperties.setProperty("JDBC.autoCommit", "false");
-        return myBatisProperties;
-    }
-
-    @Test
-    public void testFooService(){
-        User user = this.fooService.doSomeBusinessStuff("u1");
-        assertNotNull(user);
-        assertEquals("Pocoyo", user.getName());
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void testTransactionalOnClassAndMethod() {
-    	User user = new User();
-    	user.setName("Christian Poitras");
-        this.fooService.brokenInsert(user);
-    }
-    
-    @Test(expected=CustomException.class)
-    public void testTransactionalOnClass() {
-    	User user = new User();
-    	user.setName("Christian Poitras");
-        this.fooService.brokenInsert2(user);
+            }   
+        };
     }
 }
