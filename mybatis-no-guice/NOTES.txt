@@ -1,0 +1,1 @@
+$ cat create-db.ddl | heroku pg:psql
