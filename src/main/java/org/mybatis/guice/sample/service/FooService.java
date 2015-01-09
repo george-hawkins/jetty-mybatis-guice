@@ -15,21 +15,41 @@
  */
 package org.mybatis.guice.sample.service;
 
+import org.mybatis.guice.CustomException;
 import org.mybatis.guice.sample.domain.User;
+import org.mybatis.guice.sample.mapper.UserMapper;
+import org.mybatis.guice.transactional.Isolation;
+import org.mybatis.guice.transactional.Transactional;
+
+import javax.inject.Inject;
 
 /**
- * FooService acts as a business service. 
+ * Impl of the FooService.
  *
- * All calls to any method of FooService are transactional.
+ * FooService simply receives a userId and uses a mapper/dao to get a record from the database.
  *
  * @version $Id$
  */
-public interface FooService {
+@Transactional(isolation = Isolation.SERIALIZABLE, rethrowExceptionsAs=CustomException.class)
+public class FooService {
 
-    User doSomeBusinessStuff(String userId);
-    
-    void brokenInsert(User user);
+    private UserMapper userMapper;
 
-    void brokenInsert2(User user);
+    @Inject
+    public void setUserMapper(UserMapper userMapper) {
+        this.userMapper = userMapper;
+    }
 
+    public User doSomeBusinessStuff(String userId) {
+        return this.userMapper.getUser(userId);
+    }
+
+    @Transactional(isolation = Isolation.SERIALIZABLE, rethrowExceptionsAs=IllegalArgumentException.class)
+    public void brokenInsert(User user) {
+    	this.userMapper.brokenAdd(user);
+    }
+
+    public void brokenInsert2(User user) {
+    	this.userMapper.brokenAdd(user);
+    }
 }

@@ -40,7 +40,6 @@ import org.mybatis.guice.datasource.helper.JdbcHelper;
 import org.mybatis.guice.sample.domain.User;
 import org.mybatis.guice.sample.mapper.UserMapper;
 import org.mybatis.guice.sample.service.FooService;
-import org.mybatis.guice.sample.service.FooServiceMapperImpl;
 
 import com.google.inject.Binder;
 import com.google.inject.Guice;
@@ -103,9 +102,9 @@ public class SampleSqlSessionTest {
 
         }); */
         modules.add(new Module() {
+            @Override
             public void configure(Binder binder) {
                 bindProperties(binder, createTestProperties());
-                binder.bind(FooService.class).to(FooServiceMapperImpl.class);
             }
         });
 

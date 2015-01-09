@@ -38,7 +38,6 @@ import org.mybatis.guice.datasource.helper.JdbcHelper;
 import org.mybatis.guice.sample.domain.User;
 import org.mybatis.guice.sample.mapper.UserMapper;
 import org.mybatis.guice.sample.service.FooService;
-import org.mybatis.guice.sample.service.FooServiceMapperImpl;
 
 import com.google.inject.Injector;
 
@@ -70,7 +69,6 @@ public class SampleBasicTest {
                         addMapperClass(UserMapper.class);
 
                         bindProperties(binder(), createTestProperties());
-                        bind(FooService.class).to(FooServiceMapperImpl.class);
                     }
 
                 }
