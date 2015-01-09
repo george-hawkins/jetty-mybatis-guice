@@ -1,4 +1,4 @@
-package com.sivalabs.mybatisdemo.dao;
+package com.sivalabs.mybatisdemo.service;
 
 import java.io.IOException;
 import java.io.Reader;

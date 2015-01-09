@@ -3,7 +3,7 @@
     "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
     <typeAliases>
-        <typeAlias type="com.sivalabs.mybatisdemo.model.User" alias="User"/>
+        <typeAlias type="com.sivalabs.mybatisdemo.domain.User" alias="User"/>
     </typeAliases>
     <environments default="development">
         <environment id="development">

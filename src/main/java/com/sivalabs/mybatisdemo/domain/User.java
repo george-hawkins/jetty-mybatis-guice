@@ -1,4 +1,4 @@
-package com.sivalabs.mybatisdemo.model;
+package com.sivalabs.mybatisdemo.domain;
 
 public class User {
     private Integer userId;

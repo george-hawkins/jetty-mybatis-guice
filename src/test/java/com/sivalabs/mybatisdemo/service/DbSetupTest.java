@@ -1,10 +1,12 @@
-package com.sivalabs.mybatisdemo.dao;
+package com.sivalabs.mybatisdemo.service;
 
 import org.junit.Assert;
 
 import java.util.Properties;
 
 import org.junit.Test;
+
+import com.sivalabs.mybatisdemo.service.MyBatisSqlSessionFactory;
 
 public class DbSetupTest {
     @Test
