@@ -10,4 +10,6 @@ This repository consists of a number of subprojects.
    The code has been separated out into main and test and things simplified noticeably.
    Unlike the other projects this has no main runnable, just tests and these use an in memory HSQLDB DB.
 
-3. 
+3. jetty-jdbc
+   The original code comes from https://github.com/heroku/java-getting-started
+   Modified to pick up settings for JDBC connection details for Heroku Postgres BD from DATABASE_URL.
