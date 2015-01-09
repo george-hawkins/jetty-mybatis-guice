@@ -23,10 +23,11 @@
 -->
 <mapper namespace="org.mybatis.guice.sample.mapper.UserMapper">
 
-  <select id="getUser" resultType="org.mybatis.guice.sample.domain.User" parameterType="java.lang.String">
+  <select id="getUser" resultType="org.mybatis.guice.sample.domain.User">
     select * from users where id=#{value}
   </select>
-  <insert id="brokenAdd" parameterType="org.mybatis.guice.sample.domain.User" useGeneratedKeys="true" keyProperty="id">
+  
+  <insert id="brokenAdd" useGeneratedKeys="true" keyProperty="id">
     INSERT INTO
       contact (id,
         name

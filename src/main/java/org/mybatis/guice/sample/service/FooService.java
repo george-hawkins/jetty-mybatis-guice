@@ -32,7 +32,6 @@ import javax.inject.Inject;
  */
 @Transactional(isolation = Isolation.SERIALIZABLE, rethrowExceptionsAs=CustomException.class)
 public class FooService {
-
     private UserMapper userMapper;
 
     @Inject
@@ -46,10 +45,10 @@ public class FooService {
 
     @Transactional(isolation = Isolation.SERIALIZABLE, rethrowExceptionsAs=IllegalArgumentException.class)
     public void brokenInsert(User user) {
-    	userMapper.brokenAdd(user);
+        userMapper.brokenAdd(user);
     }
 
     public void brokenInsert2(User user) {
-    	userMapper.brokenAdd(user);
+        userMapper.brokenAdd(user);
     }
 }

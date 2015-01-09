@@ -23,9 +23,7 @@ import org.mybatis.guice.sample.domain.User;
  * @version $Id$
  */
 public interface UserMapper {
-
     User getUser(String userId);
     
     void brokenAdd(User user);
-
 }
