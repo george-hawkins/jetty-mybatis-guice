@@ -1,4 +1,4 @@
-package net.betaengine.secureiot;
+package net.betaengine.jettyexample;
 
 import java.io.IOException;
 import java.net.URI;

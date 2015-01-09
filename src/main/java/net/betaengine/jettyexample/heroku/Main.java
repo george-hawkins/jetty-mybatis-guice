@@ -1,4 +1,4 @@
-package net.betaengine.secureiot.heroku;
+package net.betaengine.jettyexample.heroku;
 
 import java.util.Optional;
 

@@ -5,7 +5,7 @@
 
     <servlet>
         <servlet-name>simple</servlet-name>
-        <servlet-class>net.betaengine.secureiot.SimpleServlet</servlet-class>
+        <servlet-class>net.betaengine.jettyexample.SimpleServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>simple</servlet-name>
