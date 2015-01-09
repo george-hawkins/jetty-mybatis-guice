@@ -41,15 +41,15 @@ public class FooService {
     }
 
     public User doSomeBusinessStuff(String userId) {
-        return this.userMapper.getUser(userId);
+        return userMapper.getUser(userId);
     }
 
     @Transactional(isolation = Isolation.SERIALIZABLE, rethrowExceptionsAs=IllegalArgumentException.class)
     public void brokenInsert(User user) {
-    	this.userMapper.brokenAdd(user);
+    	userMapper.brokenAdd(user);
     }
 
     public void brokenInsert2(User user) {
-    	this.userMapper.brokenAdd(user);
+    	userMapper.brokenAdd(user);
     }
 }

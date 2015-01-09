@@ -21,13 +21,11 @@ package org.mybatis.guice.sample.domain;
  * @version $Id$
  */
 public class User {
-
     private String id;
-
     private String name;
 
     public String getId() {
-        return this.id;
+        return id;
     }
 
     public void setId(String id) {
@@ -35,7 +33,7 @@ public class User {
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -46,11 +44,10 @@ public class User {
     public String toString() {
         return new StringBuilder()
             .append("{")
-            .append(this.id)
+            .append(id)
             .append(", ")
-            .append(this.name)
+            .append(name)
             .append("}" )
             .toString();
     }
-
 }

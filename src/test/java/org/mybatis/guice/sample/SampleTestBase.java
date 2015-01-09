@@ -48,19 +48,15 @@ import com.google.inject.Module;
  */
 @Ignore
 public abstract class SampleTestBase {
-
-    private Injector injector;
-
     private FooService fooService;
 
     @Before
     public void setupMyBatisGuice() throws Exception {
-        // bindings
-        this.injector = Guice.createInjector(createModules());
+        Injector injector = Guice.createInjector(createModules());
         
-        createTestDb();
+        createTestDb(injector);
 
-        this.fooService = this.injector.getInstance(FooService.class);
+        fooService = injector.getInstance(FooService.class);
     }
     
     protected abstract Module[] createModules();
@@ -74,9 +70,9 @@ public abstract class SampleTestBase {
         return myBatisProperties;
     }
     
-    private void createTestDb() throws IOException, SQLException {
+    private void createTestDb(Injector injector) throws IOException, SQLException {
         // prepare the test db
-        Environment environment = this.injector.getInstance(SqlSessionFactory.class).getConfiguration().getEnvironment();
+        Environment environment = injector.getInstance(SqlSessionFactory.class).getConfiguration().getEnvironment();
         DataSource dataSource = environment.getDataSource();
 
         ScriptRunner runner = new ScriptRunner(dataSource.getConnection());
@@ -89,7 +85,7 @@ public abstract class SampleTestBase {
 
     @Test
     public void testFooService(){
-        User user = this.fooService.doSomeBusinessStuff("u1");
+        User user = fooService.doSomeBusinessStuff("u1");
         assertNotNull(user);
         assertEquals("Pocoyo", user.getName());
     }
@@ -98,13 +94,13 @@ public abstract class SampleTestBase {
     public void testTransactionalOnClassAndMethod() {
         User user = new User();
         user.setName("Christian Poitras");
-        this.fooService.brokenInsert(user);
+        fooService.brokenInsert(user);
     }
     
     @Test(expected=CustomException.class)
     public void testTransactionalOnClass() {
         User user = new User();
         user.setName("Christian Poitras");
-        this.fooService.brokenInsert2(user);
+        fooService.brokenInsert2(user);
     }
 }
