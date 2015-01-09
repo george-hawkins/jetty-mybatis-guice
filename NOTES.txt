@@ -1,0 +1,148 @@
+Why can we hang onto a long lived instance of our mapper in our service class when using Guice but not when working directly with SqlSessionFactory and SqlSession?
+
+It turns out these mappers are a bit different to the non-Guice mappers.
+
+In the non-Guice case the mapper is wired up directly to an SqlSession subclass called DefaultSqlSession that you create via the factory.
+
+In the Guice case the mapper is wired up once with an SqlSession subclass called SqlSessionManager.
+
+SqlSessionManager then creates DefaultSqlSession instances as necessary, creating them on a per-thread basis etc. taking care of all this for you.
+
+So the Guice mapper instances don't need to be thrown away when the underlying DefaultSqlSession instances are closed.
+
+----
+
+Appication startup
+------------------
+
+```
+>   Proxy.newProxyInstance(ClassLoader, Class<?>[], InvocationHandler) line: 708	
+    MapperProxyFactory<T>.newInstance(MapperProxy<T>) line: 47	
+    MapperProxyFactory<T>.newInstance(SqlSession) line: 52	
+    MapperRegistry.getMapper(Class<T>, SqlSession) line: 49	
+    Configuration.getMapper(Class<T>, SqlSession) line: 655	
+>   SqlSessionManager.getMapper(Class<T>) line: 218	
+    MapperProvider<T>.get() line: 44	
+    Providers$3.get() line: 109	
+    InternalFactoryToProviderAdapter<T>.get(Errors, InternalContext, Dependency<?>, boolean) line: 40	
+    ProviderToInternalFactoryAdapter$1.call(InternalContext) line: 46	
+    InjectorImpl.callInContext(ContextualCallable<T>) line: 1031	
+    ProviderToInternalFactoryAdapter<T>.get() line: 40	
+    Scopes$1$1.get() line: 65	
+    InternalFactoryToProviderAdapter<T>.get(Errors, InternalContext, Dependency<?>, boolean) line: 40	
+    SingleFieldInjector.inject(Errors, InternalContext, Object) line: 53	
+    MembersInjectorImpl<T>.injectMembers(T, Errors, InternalContext, boolean) line: 110	
+    ConstructorInjector<T>.construct(Errors, InternalContext, Class<?>, boolean) line: 94	
+    ConstructorBindingImpl$Factory<T>.get(Errors, InternalContext, Dependency<?>, boolean) line: 254	
+    InjectorImpl$4$1.call(InternalContext) line: 978	
+    InjectorImpl.callInContext(ContextualCallable<T>) line: 1024	
+    InjectorImpl$4.get() line: 974	
+>   InjectorImpl.getInstance(Class<T>) line: 1013	
+    SampleBasicTest(SampleTestBase).setupMyBatisGuice() line: 59	
+```
+
+We ask the injector to create an instance of our service class, SqlSessionManager passes itself down as the SqlSession to be used when creating the required mapper proxy.
+
+This happens at application startup then in the course of our application running...
+
+----
+
+Create
+------
+
+```
+>   DefaultSqlSession.<init>(Configuration, Executor, boolean) line: 50	
+    DefaultSqlSessionFactory.openSessionFromDataSource(ExecutorType, TransactionIsolationLevel, boolean) line: 88	
+>   DefaultSqlSessionFactory.openSession(ExecutorType, TransactionIsolationLevel) line: 62	
+    SqlSessionManager.openSession(ExecutorType, TransactionIsolationLevel) line: 138	
+    SqlSessionManager.startManagedSession(ExecutorType, TransactionIsolationLevel) line: 102	
+*   TransactionalMethodInterceptor.invoke(MethodInvocation) line: 95	
+    InterceptorStackCallback$InterceptedMethodInvocation.proceed() line: 72	
+    InterceptorStackCallback.intercept(Object, Method, Object[], $MethodProxy) line: 52	
+>   FooService$$EnhancerByGuice$$9833128.doSomeBusinessStuff(String) line: not available	
+    SampleBasicTest(SampleTestBase).testFooService() line: 88	
+```
+
+On invoking a method annotated with @Transactional (or in this case a class) the proxy opens a session, i.e. creates a DefaultSqlSession instance, before we enter the method.
+
+----
+
+```
+>   FooService$$EnhancerByGuice$$9833128(FooService).doSomeBusinessStuff(String) line: 39	
+    FooService$$EnhancerByGuice$$9833128.CGLIB$doSomeBusinessStuff$0(String) line: not available	
+    FooService$$EnhancerByGuice$$9833128$$FastClassByGuice$$e14b7c2c.invoke(int, Object, Object[]) line: not available	
+    $MethodProxy.invokeSuper(Object, Object[]) line: 228	
+    InterceptorStackCallback$InterceptedMethodInvocation.proceed() line: 72	
+*   TransactionalMethodInterceptor.invoke(MethodInvocation) line: 101	
+    InterceptorStackCallback$InterceptedMethodInvocation.proceed() line: 72	
+    InterceptorStackCallback.intercept(Object, Method, Object[], $MethodProxy) line: 52	
+    FooService$$EnhancerByGuice$$9833128.doSomeBusinessStuff(String) line: not available	
+    SampleBasicTest(SampleTestBase).testFooService() line: 88	
+```
+
+After creating the DefaultSqlSession we proceed a bit further in TransactionalMethodInterceptor and it invokes the actual logic of the annotated method.
+
+----
+
+Use
+---
+
+```
+>   DefaultSqlSession.selectOne(String, Object) line: 66	
+    NativeMethodAccessorImpl.invoke0(Method, Object, Object[]) line: not available [native method]	
+    NativeMethodAccessorImpl.invoke(Object, Object[]) line: 62	
+    DelegatingMethodAccessorImpl.invoke(Object, Object[]) line: 43	
+    Method.invoke(Object, Object...) line: 483	
++   SqlSessionManager$SqlSessionInterceptor.invoke(Object, Method, Object[]) line: 278	
+    $Proxy21.selectOne(String, Object) line: not available	
+    SqlSessionManager.selectOne(String, Object) line: 154	
+>   MapperMethod.execute(SqlSession, Object[]) line: 68	
+    MapperProxy<T>.invoke(Object, Method, Object[]) line: 52	
+    $Proxy24.getUser(String) line: not available	
+    FooService$$EnhancerByGuice$$9833128(FooService).doSomeBusinessStuff(String) line: 39	
+    FooService$$EnhancerByGuice$$9833128.CGLIB$doSomeBusinessStuff$0(String) line: not available	
+    FooService$$EnhancerByGuice$$9833128$$FastClassByGuice$$e14b7c2c.invoke(int, Object, Object[]) line: not available	
+    $MethodProxy.invokeSuper(Object, Object[]) line: 228	
+    InterceptorStackCallback$InterceptedMethodInvocation.proceed() line: 72	
+*   TransactionalMethodInterceptor.invoke(MethodInvocation) line: 101	
+    InterceptorStackCallback$InterceptedMethodInvocation.proceed() line: 72	
+    InterceptorStackCallback.intercept(Object, Method, Object[], $MethodProxy) line: 52	
+    FooService$$EnhancerByGuice$$9833128.doSomeBusinessStuff(String) line: not available	
+    SampleBasicTest(SampleTestBase).testFooService() line: 88	
+```
+
+Once we actually invoke a mapper method we go down, down and hit the mapper logic which acts on the SqlSession it got at injection time, i.e. SqlSessionManager. We go on down through it and it retrieves the DefaultSqlSession we created just before entering the method and it's this that does the actual select.
+
+----
+
+Commit
+------
+
+```
+>   DefaultSqlSession.commit(boolean) line: 174	
+    SqlSessionManager.commit(boolean) line: 242	
+*   TransactionalMethodInterceptor.invoke(MethodInvocation) line: 125	
+    InterceptorStackCallback$InterceptedMethodInvocation.proceed() line: 72	
+    InterceptorStackCallback.intercept(Object, Method, Object[], $MethodProxy) line: 52	
+    FooService$$EnhancerByGuice$$9833128.doSomeBusinessStuff(String) line: not available	
+    SampleBasicTest(SampleTestBase).testFooService() line: 88	
+```
+
+We exit the logic of the underlying service method, proceed further in TransactionalMethodInterceptor and call commit on the DefaultSqlSession.
+
+----
+
+Close
+-----
+
+```
+>   DefaultSqlSession.close() line: 210	
+    SqlSessionManager.close() line: 267	
+*   TransactionalMethodInterceptor.invoke(MethodInvocation) line: 134	
+    InterceptorStackCallback$InterceptedMethodInvocation.proceed() line: 72	
+    InterceptorStackCallback.intercept(Object, Method, Object[], $MethodProxy) line: 52	
+    FooService$$EnhancerByGuice$$9833128.doSomeBusinessStuff(String) line: not available	
+    SampleBasicTest(SampleTestBase).testFooService() line: 88	
+```
+
+And then we close it.

@@ -32,10 +32,10 @@ import javax.inject.Inject;
  */
 @Transactional(isolation = Isolation.SERIALIZABLE, rethrowExceptionsAs=CustomException.class)
 public class FooService {
-    private UserMapper userMapper;
-
-    @Inject
-    public void setUserMapper(UserMapper userMapper) {
+    private final UserMapper userMapper;
+    
+    @Inject // See https://github.com/google/guice/wiki/KeepConstructorsHidden
+    /* default */ FooService(UserMapper userMapper) {
         this.userMapper = userMapper;
     }
 
