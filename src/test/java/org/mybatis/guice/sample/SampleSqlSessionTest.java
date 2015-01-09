@@ -37,12 +37,10 @@ import org.mybatis.guice.MyBatisModule;
 // import org.mybatis.guice.XMLMyBatisModule;
 import org.mybatis.guice.datasource.builtin.PooledDataSourceProvider;
 import org.mybatis.guice.datasource.helper.JdbcHelper;
-import org.mybatis.guice.sample.dao.UserDao;
-import org.mybatis.guice.sample.dao.UserDaoImpl;
 import org.mybatis.guice.sample.domain.User;
 import org.mybatis.guice.sample.mapper.UserMapper;
 import org.mybatis.guice.sample.service.FooService;
-import org.mybatis.guice.sample.service.FooServiceDaoImpl;
+import org.mybatis.guice.sample.service.FooServiceMapperImpl;
 
 import com.google.inject.Binder;
 import com.google.inject.Guice;
@@ -107,8 +105,7 @@ public class SampleSqlSessionTest {
         modules.add(new Module() {
             public void configure(Binder binder) {
                 bindProperties(binder, createTestProperties());
-                binder.bind(FooService.class).to(FooServiceDaoImpl.class);
-                binder.bind(UserDao.class).to(UserDaoImpl.class);
+                binder.bind(FooService.class).to(FooServiceMapperImpl.class);
             }
         });
 
