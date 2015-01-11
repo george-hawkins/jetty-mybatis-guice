@@ -1,33 +1,54 @@
 package net.betaengine.jettyexample.mybatis.domain;
 
 public class User {
-    private String id;
-    private String name;
+    private Integer userId;
+    private String emailId;
+    private String password;
+    private String firstName;
+    private String lastName;
 
-    public String getId() {
-        return id;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
-    public String getName() {
-        return name;
+    public String getEmailId() {
+        return emailId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setEmailId(String emailId) {
+        this.emailId = emailId;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     @Override
     public String toString() {
-        return new StringBuilder()
-            .append("{")
-            .append(id)
-            .append(", ")
-            .append(name)
-            .append("}" )
-            .toString();
+        return "User [userId=" + userId + ", emailId=" + emailId + ", password=" + password + ", firstName=" + firstName + ", lastName=" + lastName + "]";
     }
 }

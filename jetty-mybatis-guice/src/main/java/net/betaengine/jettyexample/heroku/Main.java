@@ -20,6 +20,9 @@ public class Main {
         server.setHandler(createRoot());
 
         server.start();
+        
+        // TODO: exit if the webapp fails to start, e.g. comment out "mybatis.environment.id" line in MyGuiceServletConfig.
+        
         server.join();
     }
     

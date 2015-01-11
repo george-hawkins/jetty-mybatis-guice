@@ -2,6 +2,7 @@ package net.betaengine.jettyexample;
 
 import java.util.Properties;
 
+import net.betaengine.jettyexample.mybatis.domain.User;
 import net.betaengine.jettyexample.mybatis.mapper.UserMapper;
 
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
@@ -36,6 +37,8 @@ public class MyGuiceServletConfig extends GuiceServletContextListener {
             protected void initialize() {
                 bindDataSourceProviderType(PooledDataSourceProvider.class);
                 bindTransactionFactoryType(JdbcTransactionFactory.class);
+                
+                addSimpleAlias(User.class);
                 addMapperClass(UserMapper.class);
 
                 Names.bindProperties(binder(), createProperties());
