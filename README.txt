@@ -13,3 +13,9 @@ This repository consists of a number of subprojects.
 3. jetty-jdbc
    The original code comes from https://github.com/heroku/java-getting-started
    Modified to pick up settings for JDBC connection details for Heroku Postgres BD from DATABASE_URL.
+
+4. jetty-jdbc-guice
+   Modification of jetty-jdbc to inject the JDBC connection using Guice.
+   Used https://github.com/google/guice/wiki/Servlets and http://stackoverflow.com/questions/8275194/simple-example-with-guice-servlets as guides.
+
+5. jetty-mybatis-guice
