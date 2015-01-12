@@ -64,3 +64,70 @@ Any servlet class that wants to use @Inject must be marked with @Singleton.
 See https://github.com/google/guice/wiki/ServletModule#the-binding-language
 
 ----
+
+Google @Inject vs javax.inject
+------------------------------
+
+I've chosen to stick with the com.google.inject annotations rather than using the javax.inject ones.
+
+See http://stackoverflow.com/questions/7837010/replacing-com-google-inject-with-javax-inject for some reasons for doing so.
+
+----
+
+PooledDataSourceProvider
+------------------------
+
+I've used the builtin PooledDataSourceProvider - and only set the mandatory (connection related) parameters.
+
+For all the parameters and the defaults for the optional ones see:
+
+    http://mybatis.github.io/guice/datasources/builtin.html#Pooled_Data_Source_Provider
+
+----
+
+DB connection properties
+---------------------
+
+I read the DB connection properties from the Heroku DATABASE_URL environment variable.
+
+See HerokuDbProperties and net.betaengine.jettyexample.MyGuiceServletConfig.createProperties().
+
+If not using Heroku then you should be using the JdbcHelper enum - see http://mybatis.github.io/guice/jdbc-helper.html
+
+And perhaps reading properties from a file, see use of Resources.getResourceAsProperties(...) in MyBatisSqlSessionFactory in the mybatis-no-guice subproject.
+
+----
+
+Code based configuration or XML
+-------------------------------
+
+I've wired up the MyBatisModule Guice module in code as the Mybatis Guice team generally do.
+
+But you can also use XML configuration.
+
+See http://mybatis.github.io/guice/core.html#MyBatis_XML_Bootstrap and the commented out XMLMyBatisModule section of SampleSqlSessionTest in the mybatis-guice subproject.
+
+----
+
+Making injector available via ServletContext
+--------------------------------------------
+
+I haven't needed it but if you need to make the injector generally available via the ServletContext then see:
+
+http://www.javacodegeeks.com/2013/01/lightweight-web-application-framework-primefaces-jsf-guice-mybatis-part-2.html
+
+There seems to be real use-cases for this, so much so that people want an API change to more directly support this behavior:
+
+    https://code.google.com/p/google-guice/issues/detail?id=603
+    https://github.com/google/guice/issues/603
+
+----
+
+Non-servlet injection
+---------------------
+
+You can also do some interesting servlet based injections on non-servlet classes, see:
+
+    https://github.com/google/guice/wiki/ServletModule#available-injections
+    https://github.com/google/guice/wiki/ServletModule#using-requestscope
+

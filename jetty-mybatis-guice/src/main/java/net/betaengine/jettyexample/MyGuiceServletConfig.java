@@ -32,12 +32,11 @@ public class MyGuiceServletConfig extends GuiceServletContextListener {
         };
     }
     
-    // To configure using mybatis-config.xml see commented out XMLMyBatisModule section
-    // of SampleSqlSessionTest in the mybatis-guice subproject.
     private Module createMyBatisModule() {
         return new MyBatisModule() {
             @Override
             protected void initialize() {
+                environmentId("production");
                 bindDataSourceProviderType(PooledDataSourceProvider.class);
                 bindTransactionFactoryType(JdbcTransactionFactory.class);
                 
@@ -49,14 +48,9 @@ public class MyGuiceServletConfig extends GuiceServletContextListener {
         };
     }
     
-    // If not working with Heroku, see using JdbcHelper.PostgreSQL etc.
-    // For reading properties from a file see use of Resources.getResourceAsProperties(...)
-    // in MyBatisSqlSessionFactory in mybatis-no-guice subproject.
     private Properties createProperties() {
         HerokuDbProperties herokuDb = new HerokuDbProperties();
         Properties properties = new Properties();
-        
-        properties.put("mybatis.environment.id", "production");
         
         properties.put("JDBC.driver", "org.postgresql.Driver");
         properties.put("JDBC.url", herokuDb.getUrl());

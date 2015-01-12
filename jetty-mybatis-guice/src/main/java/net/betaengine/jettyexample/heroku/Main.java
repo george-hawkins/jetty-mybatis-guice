@@ -5,9 +5,7 @@ import java.util.Optional;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
 
-/**
- * Launch the web application in an embedded Jetty container.
- */
+/**  Launch the web application in an embedded Jetty container. */
 public class Main {
     private final static String WEBAPP_PATH = "src/main/webapp/";
     private final static String WEBXMPL_PATH = WEBAPP_PATH + "/WEB-INF/web.xml";
@@ -47,8 +45,8 @@ public class Main {
         return root;
     }
     
+    /** Returns the port specified by the environment variable PORT or DEFAULT_PORT if not present. */
     private static int getPort() {
-        // Listen on the port specified by the environment variable PORT or if not present use DEFAULT_PORT.
         Optional<String> envPort = Optional.ofNullable(System.getenv(PORT_ENV));
         
         return envPort.map(Integer::parseInt).orElse(DEFAULT_PORT);

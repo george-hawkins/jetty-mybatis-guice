@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import net.betaengine.jettyexample.Util;
 
+/** Create JDBC URL and retrieve username and password from Heroku DATABASE_URL environment variable. */
 public class HerokuDbProperties {
     private final String url;
     private final String username;

@@ -3,17 +3,7 @@
         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
         version="3.0">
 
-<!--
-<servlet> and <servlet-mapping> wiring is now handled by MyGuiceServletConfig.
-    <servlet>
-        <servlet-name>simple</servlet-name>
-        <servlet-class>net.betaengine.jettyexample.SimpleServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>simple</servlet-name>
-        <url-pattern>/*</url-pattern>
-    </servlet-mapping>
--->
+	<!-- <servlet> and <servlet-mapping> wiring is handled by MyGuiceServletConfig for servlets depending on Guice. -->
 
     <filter>
         <filter-name>guiceFilter</filter-name>
