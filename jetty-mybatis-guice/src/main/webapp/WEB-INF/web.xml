@@ -3,7 +3,7 @@
         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
         version="3.0">
 
-	<!-- <servlet> and <servlet-mapping> wiring is handled by MyGuiceServletConfig for servlets depending on Guice. -->
+    <!-- <servlet> and <servlet-mapping> wiring is handled by MyGuiceServletConfig for servlets depending on Guice. -->
 
     <filter>
         <filter-name>guiceFilter</filter-name>
