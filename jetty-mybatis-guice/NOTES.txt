@@ -126,7 +126,7 @@ There seems to be real use-cases for this, so much so that people want an API ch
 Non-servlet injection
 ---------------------
 
-You can also do some interesting servlet based injections on non-servlet classes, see:
+You can also do some interesting servlet based injections, like injecting ServletContext, in non-servlet classes, see:
 
     https://github.com/google/guice/wiki/ServletModule#available-injections
     https://github.com/google/guice/wiki/ServletModule#using-requestscope
