@@ -12,12 +12,10 @@ import com.google.inject.Inject;
 public class UserService {
     private final UserMapper userMapper;
     
-    @Inject // See https://github.com/google/guice/wiki/KeepConstructorsHidden - TODO move this to NOTE.txt and comment that it also means userMapper can be final.
-    /* default */ UserService(UserMapper userMapper) {
+    @Inject
+    UserService(UserMapper userMapper) {
         this.userMapper = userMapper;
     }
-    
-    // TODO: what happens if you miss @Transactional off a method?
     
     @Transactional
     public void insertUser(User user) {

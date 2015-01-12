@@ -14,7 +14,7 @@
     </select>
 
     <!-- Above we use 'AS' to rename columns so MyBatis knows how to map things, here we use a resultMap. -->
-    <!-- Instead of referencing Fully Qualified Class Names we can register Aliases in mybatis-config.xml and use Alias names. -->
+    <!--  Instead of using FQNs for classes we can register aliases when creating the MyBatisModule. -->
     <resultMap type="User" id="UserResult">
         <id property="userId" column="user_id"/>
         <result property="emailId" column="email_id"/>

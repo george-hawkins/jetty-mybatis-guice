@@ -20,7 +20,7 @@ public class SimpleServlet extends HttpServlet {
     private final UserService userService;
     
     @Inject
-    /* default */ SimpleServlet(UserService userService) {
+    SimpleServlet(UserService userService) {
         this.userService = userService;
     }
     

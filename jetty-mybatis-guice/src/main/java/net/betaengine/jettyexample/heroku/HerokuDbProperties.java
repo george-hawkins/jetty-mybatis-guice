@@ -1,19 +1,26 @@
-package net.betaengine.jettyexample;
+package net.betaengine.jettyexample.heroku;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import net.betaengine.jettyexample.Util;
 
 public class HerokuDbProperties {
     private final String url;
     private final String username;
     private final String password;
     
+    public HerokuDbProperties() {
+        this(Util.getMandatoryEnv("DATABASE_URL"));
+    }
+    
     public HerokuDbProperties(String dbUrl) {
         Pattern pattern = Pattern.compile("postgres://([^:]+):([^@]+)@(.+)");
         Matcher matcher = pattern.matcher(dbUrl);
 
         if (!matcher.matches()) {
-            throw new RuntimeException("could not parse DATABASE_URL");
+            // Don't leak passwords to log by including DATABASE_URL values in message.
+            throw new HerokuDbPropertiesException("could not parse DATABASE_URL");
         }
 
         username = matcher.group(1);
@@ -26,4 +33,9 @@ public class HerokuDbProperties {
     public String getUsername() { return username; }
     
     public String getPassword() { return password; }
+    
+    @SuppressWarnings("serial")
+    public static class HerokuDbPropertiesException extends RuntimeException {
+        public HerokuDbPropertiesException(String message) { super(message); }
+    }
 }

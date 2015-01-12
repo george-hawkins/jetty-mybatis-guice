@@ -7,3 +7,60 @@ To run:
 $ export DATABASE_URL=$(heroku config:get DATABASE_URL)
 $ DATABASE_URL="$DATABASE_URL?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory"
 $ java -cp target/classes:target/dependency/* net.betaengine.jettyexample.heroku.Main
+
+----
+
+Constructor injection
+---------------------
+
+I've used the pattern of a constructor with default visibility for values that need to be injected.
+
+You can do:
+
+    @Inject
+    private UserMapper userMapper;
+
+But I do:
+
+    private final UserMapper userMapper;
+
+    @Inject
+    UserService(UserMapper userMapper) {
+        this.userMapper = userMapper;
+    }
+
+Default visibility prevents people accidentally creating instances elsewhere in the codebase wihout doing so via injection.
+
+Using a constructor means userMapper can be final.
+
+And using a constructor means you can test without injection, i.e. create a test in the same package and pass in a stub or whatever.
+
+Note: you can annotate a final member variable with @Inject but it has odd semantics and isn't recommended:
+
+  https://github.com/google/guice/wiki/Injections#field-injection
+
+See also:
+    http://github.com/google/guice/wiki/KeepConstructorsHidden
+    http://www.royvanrijn.com/blog/2010/09/annotated-field-injection-vs-constructor-injection/
+
+----
+
+Is @Transactional obligatory?
+-----------------------------
+
+You only need to annotate a method that makes mapper calls with @Transactional if you want to create a single containing transaction for all the work in the method.
+
+You don't need @Transactional if the method just consists of a single mapper call or you're happy with each mapper call being committed indivdually without subsequent exceptions rolling back already committed calls.
+
+See org.apache.ibatis.session.SqlSessionManager.SqlSessionInterceptor.invoke(Object, Method, Object[]) - this method is invoked as part of a mapper method call, it first tries to retrieve a containing transaction (an SqlSession) and if it doesn't find one it creates one for this particular mapper call (and handles commit and rollback).
+
+----
+
+@Singleton servlets
+-------------------
+
+Any servlet class that wants to use @Inject must be marked with @Singleton.
+
+See https://github.com/google/guice/wiki/ServletModule#the-binding-language
+
+----

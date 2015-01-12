@@ -6,7 +6,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 /**
- * This class launches the web application in an embedded Jetty container.
+ * Launch the web application in an embedded Jetty container.
  */
 public class Main {
     private final static String WEBAPP_PATH = "src/main/webapp/";
@@ -15,15 +15,23 @@ public class Main {
     private final static int DEFAULT_PORT = 8080;
     
     public static void main(String[] args) throws Exception {
-        Server server = new Server(getPort());
-        
-        server.setHandler(createRoot());
-
-        server.start();
-        
-        // TODO: exit if the webapp fails to start, e.g. comment out "mybatis.environment.id" line in MyGuiceServletConfig.
-        
-        server.join();
+        try {
+            WebAppContext root = createRoot();
+            Server server = new Server(getPort());
+            
+            server.setHandler(root);
+            server.start();
+            
+            if (!root.isAvailable()) {
+                // Container will have already logged the reason.
+                System.exit(1);
+            }
+            
+            server.join();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1); // Without an explicit exit non-daemon threads will keep JVM alive.
+        }
     }
     
     private static WebAppContext createRoot() {
