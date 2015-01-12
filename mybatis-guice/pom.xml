@@ -6,8 +6,8 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>net.betaengine</groupId>
-    <artifactId>mybatis-guice-demo</artifactId>
+    <groupId>net.betaengine.demo</groupId>
+    <artifactId>mybatis-guice</artifactId>
 
     <version>0.1-SNAPSHOT</version>
 
